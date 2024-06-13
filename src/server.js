@@ -22,7 +22,7 @@ export const setupServer = () => {
 
   // Routes
   app.get('/', (req, res) => {
-    res.json({ message: 'Hello world!', requestTime: req.requestTime });
+    res.json({ message: 'Not found', requestTime: req.requestTime });
   });
   app.use(contactsRouter);
   app.use('*', notFoundHandler);
