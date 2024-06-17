@@ -1,6 +1,6 @@
 // src/index.js
 
-import { initMongoConnection } from './db/initMongoConnection.js';
+import { initMongoConnection } from './db/initMongoConnection';
 import { setupServer } from './server.js';
 
 const bootstrap = async () => {
@@ -9,4 +9,3 @@ const bootstrap = async () => {
 };
 
 bootstrap();
-
