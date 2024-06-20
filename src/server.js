@@ -31,40 +31,40 @@ export const setupServer = () => {
     });
   });
 
-app.get('/contacts', async (req, res) => {
-  const contacts = await getAllContacts();
-  res.json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: contacts,
-  });
-});
-
-app.get('/contacts/:contactId', async (req, res) => {
-  const { contactId } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    return res.json({
-      status: 404,
-      message: `Contact with id ${contactId} is invalid.`,
+  app.get('/contacts', async (req, res) => {
+    const contacts = await getAllContacts();
+    res.json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts,
     });
-  }
-
-  const contact = await getContactById(contactId);
-
-  if (!contact) {
-    return res.json({
-      status: 404,
-      message: `Contact with id ${contactId} not found.`,
-    });
-  }
-
-  res.json({
-    status: 200,
-    message: `Successfully found contact with id ${contactId}!`,
-    data: contact,
   });
-});
+
+  app.get('/contacts/:contactId', async (req, res) => {
+    const { contactId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(contactId)) {
+      return res.json({
+        status: 404,
+        message: `Contact with id ${contactId} is invalid.`,
+      });
+    }
+
+    const contact = await getContactById(contactId);
+
+    if (!contact) {
+      return res.json({
+        status: 404,
+        message: `Contact with id ${contactId} not found.`,
+      });
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully found contact with id ${contactId}!`,
+      data: contact,
+    });
+  });
 
   app.use('*', (req, res, next) => {
     res.json({
