@@ -1,15 +1,12 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import { fixupConfigRules } from "@eslint/compat";
+
 
 export default [
+  {languageOptions: { globals: globals.browser }},
   pluginJs.configs.recommended,
-  {
-    files: ['src/**/*.js'],
-    languageOptions: { globals: globals.node },
-    rules: { 
-	    semi: 'error', 
-	    'no-unused-vars': 'error', 
-	    'no-undef': 'error' 
-	  },
-  },
+  { files: ["**/*.jsx"], languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } } },
+  ...fixupConfigRules(pluginReactConfig),
 ];
