@@ -1,17 +1,24 @@
 import express from 'express';
-import pino from 'pino-http';
-import cors from 'cors';
-import mongoose from 'mongoose';
-
 import { env } from './utils/env.js';
-import { getAllContacts, getContactById } from './services/contacts.js';
+import { ENV_VARS } from './constants/constantsApp.js';
+import cors from 'cors';
+import pino from 'pino-http';
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
+import contactsRouter from './routers/contacts.js'
 
-const PORT = Number(env('PORT', '3000'));
+const PORT = env(ENV_VARS, 3000);
 
 export const setupServer = () => {
   const app = express();
 
-  app.use(express.json());
+  app.use(
+    express.json({
+      type: ['application/json', 'application/vnd.api+json'],
+      limit: '250kb',
+    }),
+  );
+
   app.use(cors());
 
   app.use(
@@ -24,62 +31,14 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      status: 200,
-      message: 'Hello World!',
+      message: 'Contact App is Running',
     });
   });
 
-  app.get('/contacts', async (req, res) => {
-    const contacts = await getAllContacts();
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
+  app.use(contactsRouter);
 
-  app.get('/contacts/:contactId', async (req, res) => {
-    const { contactId } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      return res.json({
-        status: 404,
-        message: `Contact with id ${contactId} is invalid.`,
-      });
-    }
-
-    const contact = await getContactById(contactId);
-
-    if (!contact) {
-      return res.json({
-        status: 404,
-        message: `Contact with id ${contactId} not found.`,
-      });
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-  });
-
-  app.use('*', (req, res, next) => {
-    res.json({
-      status: 404,
-      message: 'Not found',
-    });
-    next();
-  });
-
-  app.use((err, req, res, next) => {
-    res.json({
-      status: 500,
-      message: 'Something went wrong',
-      error: err.message,
-    });
-    next();
-  });
+  app.use('*', notFoundHandler);
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
