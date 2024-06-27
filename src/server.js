@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { json } from 'express';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constantsApp.js';
 import cors from 'cors';
 import pino from 'pino-http';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
-import contactsRouter from './routers/contacts.js'
+import contactsRouter from './routers/contacts.js';
 
 const PORT = env(ENV_VARS, 3000);
 
@@ -31,7 +31,7 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Contact App is Running',
+      message: 'Successfully found contacts!',
     });
   });
 
