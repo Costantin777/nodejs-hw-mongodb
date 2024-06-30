@@ -4,12 +4,15 @@ const Contact = new Schema(
   {
     name: {
       type: String,
+      required: true, // Залишаємо обов'язковість для поля "name"
     },
     phoneNumber: {
       type: String,
+      required: true, // Залишаємо обов'язковість для поля "phoneNumber"
     },
     email: {
       type: String,
+      // Видаляємо обов'язковість для поля "email"
     },
     isFavourite: {
       type: Boolean,
