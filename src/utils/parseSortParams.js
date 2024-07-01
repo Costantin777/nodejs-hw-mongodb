@@ -1,8 +1,9 @@
-import { SORT_ORDER } from '../constants/constantsApp.js';
+import { SORT_ORDER } from "../constants/constantsApp.js";
 
 const parseSortOrder = (sortOrder) => {
   const isKnownOrder = [SORT_ORDER.ASC, SORT_ORDER.DESC].includes(sortOrder);
-  return isKnownOrder ? sortOrder : SORT_ORDER.ASC;
+  if (isKnownOrder) return sortOrder;
+  return SORT_ORDER.ASC;
 };
 
 const parseSortBy = (sortBy) => {
@@ -17,7 +18,11 @@ const parseSortBy = (sortBy) => {
     'updatedAt',
   ];
 
-  return keysOfContact.includes(sortBy) ? sortBy : '_id';
+  if (keysOfContact.includes(sortBy)) {
+    return sortBy;
+  }
+
+  return '_id';
 };
 
 export const parseSortParams = (query) => {

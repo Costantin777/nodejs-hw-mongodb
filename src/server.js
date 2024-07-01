@@ -1,11 +1,13 @@
-import express, { json } from 'express';
+import express from 'express';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constantsApp.js';
 import cors from 'cors';
 import pino from 'pino-http';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
-import contactsRouter from './routers/contacts.js';
+import router from './routers/index.js';
+import cookieParser from 'cookie-parser';
+
 
 const PORT = env(ENV_VARS, 3000);
 
@@ -19,8 +21,8 @@ export const setupServer = () => {
     }),
   );
 
+  app.use(cookieParser());
   app.use(cors());
-
   app.use(
     pino({
       transport: {
@@ -31,11 +33,11 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Successfully found contacts!',
+      message: 'Contact App is Running',
     });
   });
 
-  app.use(contactsRouter);
+  app.use(router);
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);
