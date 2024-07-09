@@ -3,11 +3,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const env = (envName, defaultValue) => {
-  const value = process.env[envName];
-
-  if (value) return value;
-
+  if (process.env[envName]) return process.env[envName];
   if (defaultValue) return defaultValue;
 
-  throw new Error(`Missing: process.env['${envName}'].`);
-}
+  throw new Error(`Env variable named ${envName} not found`);
+};
