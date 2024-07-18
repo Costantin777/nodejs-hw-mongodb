@@ -1,10 +1,13 @@
 import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
-import mongoose from 'mongoose';
-
 import { env } from './utils/env.js';
-import { getAllContacts, getContactById } from './services/contacts.js';
+import router from './routers/index.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import cookieParser from 'cookie-parser';
+import { UPLOAD_DIR } from './constants/constans.js';
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -12,7 +15,10 @@ export const setupServer = () => {
   const app = express();
 
   app.use(express.json());
+
   app.use(cors());
+
+  app.use(cookieParser());
 
   app.use(
     pino({
@@ -22,64 +28,14 @@ export const setupServer = () => {
     }),
   );
 
-  app.get('/', (req, res) => {
-    res.json({
-      status: 200,
-      message: 'Hello World!',
-    });
-  });
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
-  app.get('/contacts', async (req, res) => {
-    const contacts = await getAllContacts();
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
+  app.use(router);
 
-  app.get('/contacts/:contactId', async (req, res) => {
-    const { contactId } = req.params;
+  app.use('*', notFoundHandler);
 
-    if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      return res.json({
-        status: 404,
-        message: `Contact with id ${contactId} is invalid.`,
-      });
-    }
-
-    const contact = await getContactById(contactId);
-
-    if (!contact) {
-      return res.json({
-        status: 404,
-        message: `Contact with id ${contactId} not found.`,
-      });
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id ${contactId}!`,
-      data: contact,
-    });
-  });
-
-  app.use('*', (req, res, next) => {
-    res.json({
-      status: 404,
-      message: 'Not found',
-    });
-    next();
-  });
-
-  app.use((err, req, res, next) => {
-    res.json({
-      status: 500,
-      message: 'Something went wrong',
-      error: err.message,
-    });
-    next();
-  });
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
