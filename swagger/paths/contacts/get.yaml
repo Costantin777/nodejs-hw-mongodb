@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Get list of contacts
 operationId: getContacts
-description: 'Get list of contacts with this endpoint'
+description: 'Get list of users with this endpoint'
 security:
   - bearerAuth: []
 parameters:
@@ -15,39 +15,26 @@ parameters:
     name: perPage
     schema:
       type: integer
-    example: 10
+      example: 10
   - in: query
     name: sortBy
     schema:
       type: string
-      default: '_id'
-      enum: [
-      '_id',
-      'name',
-      'phoneNumber',
-      'email',
-      'isFavourite',
-      'contactType',
-      ]
-    example: 'name'
-    description: "All contacts's fields can be mentioned. Default value - _id"
+      example: 'name'
+    description: "All contact's fields can be mentioned. Default value - _id"
   - in: query
     name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
-    example: 'asc'
+      example: 'asc'
+
   - in: query
-    name: isFavourite
-    schema:
-      type: boolean
-      default: false
-  - in: query
-    name: contactType
+    name: gender
     schema:
       type: string
       enum: ['work', 'home', 'personal']
-      default: 'personal'
+      example: personal
 responses:
   '200':
     description: Successfully found contacts!
@@ -80,24 +67,50 @@ responses:
                 data:
                   type: array
                   items:
-                    $ref: '../../components/schemas/contact.yaml'
+                    $ref: ..\..\components\schemas\contact.yaml
                 page:
                   type: number
                   example: 2
                 perPage:
                   type: number
-                  example: 10
+                  example: 4
                 totalItems:
                   type: number
-                  example: 30
+                  example: 4
                 totalPages:
                   type: number
-                  example: 3
+                  example: 4
                 hasNextPage:
                   type: boolean
-                  example: true
+                  example: false
                 hasPreviousPage:
                   type: boolean
                   example: true
   '401':
-    $ref: '../../components/responses/401.yaml'
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: 'Session not found'
+            data:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: 'Session not found'
+
+  '404':
+    $ref: '../../components/responses/404.yaml'

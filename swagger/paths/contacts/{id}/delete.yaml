@@ -11,11 +11,11 @@ parameters:
     required: true
     schema:
       type: string
-      example: '66780ea6f56d6dd346e8c7f2'
+      example: '65ca67e7ae7f10c88b598384'
 responses:
   '204':
-    description: 'Deleted contact by id'
-  '401':
-    $ref: '../../../components/responses/401.yaml'
+    description: No Content
+  '400':
+    $ref: '../../../components/responses/400.yaml'
   '404':
     $ref: '../../../components/responses/404.yaml'
