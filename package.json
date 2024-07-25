@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-hw-mongodb",
+  "name": "nodejs-basics",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -10,7 +10,7 @@
     "dev": "nodemon src/index.js"
   },
   "keywords": [],
-  "author": "Korotkevych Anna",
+  "author": "Alexander Repeta <a.repeta@goit.global>",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.2.0",
@@ -36,3 +36,4 @@
     "pino-http": "^10.1.0"
   }
 }
+
